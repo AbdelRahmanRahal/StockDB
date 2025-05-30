@@ -7,7 +7,7 @@ INSERT INTO supplier (supplier_name, contact_information) VALUES
 -- Insert Users
 INSERT INTO "user" (first_name, last_name, email, password_hash, user_type) VALUES
 ('Mahmoud', 'Mohamed', 'mahmoud.m@example.com', 'pass123', 'Customer'),
-('Ahmed', 'Hisham', 'aqandil@nu.edu.eg', 'P@ss02020', 'Admin'),
+('Ahmed', 'Hisham', 'aqandil@nu.edu.eg', '1234', 'Admin'),
 ('Abderhman', 'Rahal', 'abderhman.r@example.com', 'pass123', 'Admin'),
 ('Nour', 'Sharkawy', 'nour.s@example.com', 'pass123', 'Staff'),
 ('Ahmed', 'Said', 'ahmed.s@example.com', 'pass123', 'Customer'),

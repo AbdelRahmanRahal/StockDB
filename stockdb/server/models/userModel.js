@@ -1,14 +1,16 @@
 const db = require('../config/db');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
-const createUser = async ({ first_name, last_name, email, password_hash }) => {
+const createUser = async ({ first_name, last_name, email, password_hash, user_type }) => {
   const hashedPassword = await bcrypt.hash(password_hash, 10);
   const result = await db.query(
-    'INSERT INTO "user" (first_name, last_name, email, password_hash) VALUES ($1, $2, $3, $4) RETURNING *',
-    [first_name, last_name, email, hashedPassword]
+    'INSERT INTO "user" (first_name, last_name, email, password_hash, user_type) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+    [first_name, last_name, email, hashedPassword, user_type]
   );
   return result.rows[0];
 };
+
 
 const authenticate = async (email, password) => {
   const result = await db.query('SELECT * FROM "user" WHERE email = $1', [email]);
@@ -23,7 +25,14 @@ const authenticate = async (email, password) => {
     throw new Error('Invalid password');
   }
   
-  return user;
+  // Generate JWT
+  const token = jwt.sign(
+    { userId: user.id, userType: user.user_type },
+    process.env.JWT_SECRET,
+    { expiresIn: '1h' } // Token expires in 1 hour
+  );
+  
+  return { user, token }; // Return user object and token
 };
 
 const getUserById = async (userId) => {
