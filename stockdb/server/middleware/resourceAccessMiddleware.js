@@ -345,4 +345,4 @@ module.exports = {
     checkSupplierAccess,
     checkProductAccess,
     checkResourceState
-}; 
+};

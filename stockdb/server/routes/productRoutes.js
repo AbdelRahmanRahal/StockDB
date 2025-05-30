@@ -23,23 +23,4 @@ router.patch('/:sku/inventory', authenticateToken, authorizeOperation('inventory
 // Delete a product by SKU (Admin/Staff only)
 router.delete('/:sku', authenticateToken, authorizeOperation('product:delete'), productController.deleteProduct);
 
-// Get a specific product by ID (public access)
-router.get('/id/:id', productController.getProductById);
-
-// Update a product by ID (Admin/Staff/Supplier only, and Supplier can only update their own)
-router.put('/id/:id', authenticateToken, authorizeOperation('product:update'), checkProductAccess, productController.updateProduct);
-
-// Get products by supplier (public access)
-router.get('/supplier/:supplierId', productController.getProductsBySupplier);
-
-// Inventory management routes (by product ID)
-router.get('/id/:id/inventory', authenticateToken, authorizeOperation('inventory:read'), checkInventoryAccess, productController.getProductInventory);
-router.put('/id/:id/inventory', authenticateToken, authorizeOperation('inventory:update'), checkInventoryAccess, productController.updateProductInventory);
-
-// Product categories (Admin/Staff only)
-router.get('/categories', authenticateToken, authorizeOperation('product:read'), productController.getCategories);
-router.post('/categories', authenticateToken, authorizeOperation('product:create'), productController.createCategory);
-router.put('/categories/:id', authenticateToken, authorizeOperation('product:update'), productController.updateCategory);
-router.delete('/categories/:id', authenticateToken, authorizeOperation('product:delete'), productController.deleteCategory);
-
-module.exports = router; 
+module.exports = router;

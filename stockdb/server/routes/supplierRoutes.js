@@ -5,8 +5,6 @@ const authenticateToken = require('../middleware/authMiddleware');
 const { authorizeOperation } = require('../middleware/authorizeMiddleware');
 const { checkSupplierAccess } = require('../middleware/resourceAccessMiddleware');
 
-// Supplier routes
-
 // Create a new supplier (Admin/Staff only)
 router.post('/', authenticateToken, authorizeOperation('supplier:create'), supplierController.createSupplier);
 
@@ -22,16 +20,4 @@ router.put('/:id', authenticateToken, authorizeOperation('supplier:update'), che
 // Delete a supplier (Admin/Staff only)
 router.delete('/:id', authenticateToken, authorizeOperation('supplier:delete'), supplierController.deleteSupplier);
 
-// Get supplier's products (public access)
-router.get('/:id/products', supplierController.getSupplierProducts);
-
-// Get supplier's orders (Admin/Staff can view any, Supplier can view their own)
-router.get('/:id/orders', authenticateToken, authorizeOperation('order:read'), checkSupplierAccess, supplierController.getSupplierOrders);
-
-// Get supplier's payments (Admin/Staff can view any, Supplier can view their own)
-router.get('/:id/payments', authenticateToken, authorizeOperation('payment:read'), checkSupplierAccess, supplierController.getSupplierPayments);
-
-// Supplier performance metrics (Admin/Staff only)
-router.get('/:id/metrics', authenticateToken, authorizeOperation('supplier:read'), supplierController.getSupplierMetrics);
-
-module.exports = router; 
+module.exports = router;
