@@ -20,23 +20,43 @@ export default function AuthForm({
       
       <form onSubmit={onSubmit} className="p-6 space-y-6">
         {!isLogin && (
-          <div className="relative">
-            <input
-              type="text"
-              id="username"
-              name="username"
-              placeholder=" "
-              value={formData.username || ''}
-              onChange={onChange}
-              className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-black peer"
-              required
-            />
-            <label
-              htmlFor="username"
-              className="absolute text-sm text-gray-500 duration-200 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
-            >
-              Username
-            </label>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="relative">
+              <input
+                type="text"
+                id="firstName"
+                name="firstName"
+                placeholder=" "
+                value={formData.firstName || ''}
+                onChange={onChange}
+                className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-black peer"
+                required
+              />
+              <label
+                htmlFor="firstName"
+                className="absolute text-sm text-gray-500 duration-200 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+              >
+                First name
+              </label>
+            </div>
+            <div className="relative">
+              <input
+                type="text"
+                id="lastName"
+                name="lastName"
+                placeholder=" "
+                value={formData.lastName || ''}
+                onChange={onChange}
+                className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-black peer"
+                required
+              />
+              <label
+                htmlFor="lastName"
+                className="absolute text-sm text-gray-500 duration-200 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+              >
+                Last name
+              </label>
+            </div>
           </div>
         )}
         
@@ -106,6 +126,23 @@ export default function AuthForm({
             {errors.confirmPassword && (
               <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
             )}
+          </div>
+        )}
+        {!isLogin && (
+          <div className="mt-2">
+            <label className="block text-sm font-medium text-gray-700" htmlFor="userType">
+              Account Type
+            </label>
+            <select
+              id="userType"
+              name="userType"
+              value={formData.userType}
+              onChange={onChange}
+              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-gray-500 focus:border-gray-500 sm:text-sm rounded-md"
+            >
+              <option value="Customer">Customer</option>
+              <option value="Staff">Staff</option>
+            </select>
           </div>
         )}
         

@@ -6,13 +6,16 @@ import { toast } from 'react-toastify';
 import { useLoading } from '../../context/LoadingContext';
 import { AuthContext } from '../../context/AuthContext';
 import 'react-toastify/dist/ReactToastify.css';
+import { use } from 'react';
 
 export default function RegisterForm() {
   const [formData, setFormData] = useState({
-    username: '',
+    firstName: '',
+    lastName: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    userType: ''
   });
   const [errors, setErrors] = useState({});
   const { showLoading, hideLoading } = useLoading();
@@ -22,10 +25,16 @@ export default function RegisterForm() {
   const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.username.trim()) {
-      newErrors.username = 'Username is required';
-    } else if (formData.username.length < 3) {
-      newErrors.username = 'Username must be at least 3 characters';
+    if (!formData.firstName.trim()) {
+      newErrors.firstName = 'First name is required';
+    } else if (formData.firstName.length < 1) {
+      newErrors.firstName = 'First name must be at least 1 character';
+    }
+
+    if (!formData.lastName.trim()) {
+      newErrors.lastName = 'Last name is required';
+    } else if (formData.lastName.length < 1) {
+      newErrors.lastName = 'Last name must be at least 1 character';
     }
     
     if (!formData.email.trim()) {
@@ -75,14 +84,12 @@ export default function RegisterForm() {
     showLoading();
     
     try {
-      const [first_name, ...rest] = formData.username.trim().split(' ');
-      const last_name = rest.join(' ') || '';
-
       const userData = {
-        first_name: first_name,
-        last_name: last_name,
+        first_name: formData.firstName.trim(),
+        last_name: formData.lastName.trim(),
         email: formData.email,
-        password_hash: formData.password
+        password_hash: formData.password,
+        user_type: formData.userType || 'Customer'
       };
       
       const registeredUser = await register(userData);
