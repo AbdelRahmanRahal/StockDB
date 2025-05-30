@@ -1,8 +1,16 @@
-export default function AuthForm({ formType, onSubmit, formData, onChange }) {
+export default function AuthForm({ 
+  formType, 
+  onSubmit, 
+  formData, 
+  onChange, 
+  errors = {}, 
+  isLoading = false 
+}) {
   const isLogin = formType === 'login';
   const title = isLogin ? 'Welcome back!' : 'Create an account';
   const subtitle = isLogin ? 'Log in to continue' : 'Get started with us today';
 
+  
   return (
     <div className="max-w-md w-full mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
       <div className="bg-radial from-black to-gray-800 p-10 text-white">
@@ -18,7 +26,7 @@ export default function AuthForm({ formType, onSubmit, formData, onChange }) {
               id="username"
               name="username"
               placeholder=" "
-              value={formData.username}
+              value={formData.username || ''}
               onChange={onChange}
               className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-black peer"
               required
@@ -59,7 +67,9 @@ export default function AuthForm({ formType, onSubmit, formData, onChange }) {
             placeholder=" "
             value={formData.password}
             onChange={onChange}
-            className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-black peer"
+            className={`block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border ${
+              errors.password ? 'border-red-500' : 'border-gray-300'
+            } appearance-none focus:outline-none focus:ring-0 focus:border-black peer`}
             required
           />
           <label
@@ -68,13 +78,55 @@ export default function AuthForm({ formType, onSubmit, formData, onChange }) {
           >
             Password
           </label>
+          {errors.password && (
+            <p className="mt-1 text-sm text-red-600">{errors.password}</p>
+          )}
         </div>
+
+        {!isLogin && (
+          <div className="relative">
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              placeholder=" "
+              value={formData.confirmPassword}
+              onChange={onChange}
+              className={`block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border ${
+                errors.confirmPassword ? 'border-red-500' : 'border-gray-300'
+              } appearance-none focus:outline-none focus:ring-0 focus:border-black peer`}
+              required
+            />
+            <label
+              htmlFor="confirmPassword"
+              className="absolute text-sm text-gray-500 duration-200 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1"
+            >
+              Confirm Password
+            </label>
+            {errors.confirmPassword && (
+              <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
+            )}
+          </div>
+        )}
         
         <button
           type="submit"
-          className="w-full bg-radial from-black to-gray-800 text-white py-2 px-4 rounded-md hover:from-gray-800 hover:to-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 transition-all duration-200 active:scale-[0.98] shadow-md hover:shadow-lg"
+          disabled={isLoading}
+          className={`w-full bg-radial from-black to-gray-800 text-white py-2 px-4 rounded-md hover:from-gray-800 hover:to-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600 focus:ring-offset-2 transition-all duration-200 active:scale-[0.98] shadow-md hover:shadow-lg ${
+            isLoading ? 'opacity-70 cursor-not-allowed' : ''
+          }`}
         >
-          {isLogin ? 'Login' : 'Register'}
+          {isLoading ? (
+            <span className="flex items-center justify-center">
+              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Processing...
+            </span>
+          ) : (
+            isLogin ? 'Login' : 'Register'
+          )}
         </button>
         
         <div className="text-center text-sm text-gray-600 pt-2">
