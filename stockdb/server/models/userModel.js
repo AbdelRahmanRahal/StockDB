@@ -26,4 +26,17 @@ const authenticate = async (email, password) => {
   return user;
 };
 
-module.exports = { createUser, authenticate };
+const getUserById = async (userId) => {
+  const result = await db.query('SELECT id, first_name, last_name, email FROM "user" WHERE id = $1', [userId]);
+  return result.rows[0];
+};
+
+const updateUser = async (userId, { first_name, last_name, email }) => {
+  const result = await db.query(
+    'UPDATE "user" SET first_name = $1, last_name = $2, email = $3 WHERE id = $4 RETURNING id, first_name, last_name, email',
+    [first_name, last_name, email, userId]
+  );
+  return result.rows[0];
+};
+
+module.exports = { createUser, authenticate, getUserById, updateUser };
