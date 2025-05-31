@@ -24,8 +24,8 @@ export default function LoginForm() {
     showLoading();
     
     try {
-      const user = await login(formData);
-      authLogin(user);
+      const { user, token } = await login(formData);
+      authLogin(user, token); // Pass both user and token
       toast.success('Login successful!');
       navigate('/dashboard');
     } catch (error) {
