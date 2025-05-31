@@ -55,9 +55,9 @@ export default function AddSupplierForm({ onClose }) {
           value={form.supplier_name}
           onChange={handleChange}
           required
-          className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 peer"
+          className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-black peer"
         />
-        <label className="absolute left-3 top-2 text-sm text-gray-500 peer-placeholder-shown:top-1/2 peer-placeholder-shown:transform-none peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4">
+        <label className="absolute text-sm text-gray-500 duration-200 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">
           Supplier Name
         </label>
       </div>
@@ -70,9 +70,9 @@ export default function AddSupplierForm({ onClose }) {
           value={form.contact_information}
           onChange={handleChange}
           required
-          className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 peer"
+          className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-black peer"
         />
-        <label className="absolute left-3 top-2 text-sm text-gray-500 peer-placeholder-shown:top-1/2 peer-placeholder-shown:transform-none peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4">
+        <label className="absolute text-sm text-gray-500 duration-200 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">
           Contact Information
         </label>
       </div>

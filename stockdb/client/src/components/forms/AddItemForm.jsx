@@ -118,9 +118,9 @@ export default function AddItemForm({ onAdd }) {
               value={form[field]}
               onChange={handleChange}
               required
-              className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 peer"
+              className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-black peer"
             />
-            <label className="absolute left-3 top-2 text-sm text-gray-500 peer-placeholder-shown:top-1/2 peer-placeholder-shown:transform-none peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4">
+            <label className="absolute text-sm text-gray-500 duration-200 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">
               {field.replace('_', ' ').replace(/\b\w/g, c => c.toUpperCase())}
             </label>
           </div>
@@ -135,9 +135,9 @@ export default function AddItemForm({ onAdd }) {
             value={form.description}
             onChange={handleChange}
             rows={3}
-            className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 peer"
+            className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-0 focus:border-black peer"
           />
-          <label className="absolute left-3 top-2 text-sm text-gray-500 peer-placeholder-shown:top-1/2 peer-placeholder-shown:transform-none peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4">
+          <label className="absolute text-sm text-gray-500 duration-200 transform -translate-y-4 scale-75 top-2 z-10 origin-[0] bg-white px-2 peer-focus:px-2 peer-focus:text-black peer-placeholder-shown:scale-100 peer-placeholder-shown:-translate-y-1/2 peer-placeholder-shown:top-1/2 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4 left-1">
             Description
           </label>
         </div>
@@ -149,7 +149,7 @@ export default function AddItemForm({ onAdd }) {
                 value={form.supplier_id}
                 onChange={handleChange}
                 disabled={loadingSuppliers}
-                className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 peer disabled:opacity-50"
+                className="block px-2.5 pb-2.5 pt-4 w-full text-sm text-gray-900 bg-transparent rounded-lg border border-gray-300 focus:outline-none focus:ring-0 focus:border-black peer"
             >
                 <option value="">Select a supplier (optional)</option>
                 {suppliers.map(supplier => (
@@ -158,9 +158,6 @@ export default function AddItemForm({ onAdd }) {
                     </option>
                 ))}
             </select>
-            <label className="absolute left-3 top-2 text-sm text-gray-500 peer-focus:top-2 peer-focus:scale-75 peer-focus:-translate-y-4">
-              Supplier
-            </label>
           </div>
           {loadingSuppliers && (
             <p className="text-sm text-gray-500">Loading suppliers...</p>
