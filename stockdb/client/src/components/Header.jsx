@@ -16,6 +16,9 @@ export default function Header({ onOpenAddItem, onOpenAddSupplier }) {
             <div className="bg-white rounded-full p-1.5">
               <img src="/logo.png" alt="Logo" className="h-8 w-auto" />
             </div>
+            <div className="ml-2 text-3xl text-white font-bold font-[Avant Garde]">
+              StockDB
+            </div>
           </Link>
         </div>
 
