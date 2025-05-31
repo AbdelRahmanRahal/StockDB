@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function ItemList({ items }) {
   return (
     <div className="overflow-x-auto bg-white p-6 rounded-lg shadow-md mt-6">

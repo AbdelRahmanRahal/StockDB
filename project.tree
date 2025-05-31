@@ -28,9 +28,15 @@ StockDB/
 │  │  │  │  │  ├─ ProtectedRoute.jsx
 │  │  │  │  │  └─ RegisterForm.jsx
 │  │  │  │  ├─ dashboard/
-│  │  │  │  │  ├─ AddItemForm.jsx
 │  │  │  │  │  └─ ItemList.jsx
-│  │  │  │  └─ GlobalLoadingOverlay.jsx
+│  │  │  │  ├─ forms/
+│  │  │  │  │  ├─ AddItemForm.jsx
+│  │  │  │  │  └─ AddSupplierForm.jsx
+│  │  │  │  ├─ modals/
+│  │  │  │  │  ├─ AddItemModal.jsx
+│  │  │  │  │  └─ AddSupplierModal.jsx
+│  │  │  │  ├─ GlobalLoadingOverlay.jsx
+│  │  │  │  └─ Header.jsx
 │  │  │  ├─ context/
 │  │  │  │  ├─ AuthContext.jsx
 │  │  │  │  └─ LoadingContext.jsx
@@ -80,13 +86,12 @@ StockDB/
 │     │  └─ userModel.js
 │     ├─ routes/
 │     │  ├─ alertRoutes.js
+│     │  ├─ devAuthRoutes.js
+│     │  ├─ devDataRoutes.js
 │     │  ├─ orderRoutes.js
 │     │  ├─ paymentRoutes.js
-│     │  ├─ productRoutes.js
 │     │  ├─ reportRoutes.js
-│     │  ├─ stockRoutes.js
-│     │  ├─ supplierRoutes.js
-│     │  └─ userRoutes.js
+│     │  └─ stockRoutes.js
 │     ├─ .env
 │     ├─ BACKEND_OVERVIEW.md
 │     ├─ index.js
