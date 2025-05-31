@@ -1,4 +1,8 @@
 StockDB/
+├─ db/
+│  ├─ stock_Db_datamainbulation.sql
+│  ├─ Stock_queries_insights.sql
+│  └─ Stock_schema.sql
 ├─ docs/
 │  ├─ diagrams/
 │  │  ├─ E_commerce_inventory_mangement_system-Page-1.drawio (3).png
@@ -12,7 +16,9 @@ StockDB/
 │  │  │  └─ logo.png
 │  │  ├─ src/
 │  │  │  ├─ api/
-│  │  │  │  └─ auth.js
+│  │  │  │  ├─ auth.js
+│  │  │  │  ├─ inventory.js
+│  │  │  │  └─ supplier.js
 │  │  │  ├─ assets/
 │  │  │  │  └─ react.svg
 │  │  │  ├─ components/
@@ -21,6 +27,9 @@ StockDB/
 │  │  │  │  │  ├─ LoginForm.jsx
 │  │  │  │  │  ├─ ProtectedRoute.jsx
 │  │  │  │  │  └─ RegisterForm.jsx
+│  │  │  │  ├─ dashboard/
+│  │  │  │  │  ├─ AddItemForm.jsx
+│  │  │  │  │  └─ ItemList.jsx
 │  │  │  │  └─ GlobalLoadingOverlay.jsx
 │  │  │  ├─ context/
 │  │  │  │  ├─ AuthContext.jsx
@@ -44,12 +53,42 @@ StockDB/
 │     ├─ config/
 │     │  └─ db.js
 │     ├─ controllers/
+│     │  ├─ alertController.js
+│     │  ├─ orderController.js
+│     │  ├─ paymentController.js
+│     │  ├─ productController.js
+│     │  ├─ reportController.js
+│     │  ├─ stockController.js
+│     │  ├─ supplierController.js
 │     │  └─ userController.js
+│     ├─ db/
+│     │  ├─ schema.sql
+│     │  ├─ seed.sql
+│     │  └─ setup.js
+│     ├─ middleware/
+│     │  ├─ authMiddleware.js
+│     │  ├─ authorizeMiddleware.js
+│     │  └─ resourceAccessMiddleware.js
 │     ├─ models/
+│     │  ├─ alertModel.js
+│     │  ├─ orderModel.js
+│     │  ├─ paymentModel.js
+│     │  ├─ productModel.js
+│     │  ├─ reportModel.js
+│     │  ├─ stockModel.js
+│     │  ├─ supplierModel.js
 │     │  └─ userModel.js
 │     ├─ routes/
+│     │  ├─ alertRoutes.js
+│     │  ├─ orderRoutes.js
+│     │  ├─ paymentRoutes.js
+│     │  ├─ productRoutes.js
+│     │  ├─ reportRoutes.js
+│     │  ├─ stockRoutes.js
+│     │  ├─ supplierRoutes.js
 │     │  └─ userRoutes.js
 │     ├─ .env
+│     ├─ BACKEND_OVERVIEW.md
 │     ├─ index.js
 │     ├─ package-lock.json
 │     └─ package.json
