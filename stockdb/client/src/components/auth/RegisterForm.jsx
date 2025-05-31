@@ -6,7 +6,6 @@ import { toast } from 'react-toastify';
 import { useLoading } from '../../context/LoadingContext';
 import { AuthContext } from '../../context/AuthContext';
 import 'react-toastify/dist/ReactToastify.css';
-import { use } from 'react';
 
 export default function RegisterForm() {
   const [formData, setFormData] = useState({
