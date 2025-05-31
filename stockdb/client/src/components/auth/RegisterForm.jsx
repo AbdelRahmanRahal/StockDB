@@ -92,11 +92,11 @@ export default function RegisterForm() {
         user_type: formData.userType || 'Customer'
       };
       
-      const registeredUser = await register(userData);
+      const { user, token } = await register(userData);
       toast.success('Registration successful! You are now logged in.');
       
       // Automatically log in the user after registration
-      authLogin(registeredUser);
+      authLogin(user, token);
       navigate('/dashboard');
     } catch (error) {
       console.error('Registration error:', error);

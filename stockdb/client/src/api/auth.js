@@ -1,47 +1,40 @@
-import axios from 'axios';
+export async function login({ email, password }) {
+  const response = await fetch('/api/dev-login', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ email, password }),
+  });
 
-const API_URL = 'http://localhost:3001/api/users';
-
-// Create axios instance
-const api = axios.create({
-  baseURL: API_URL,
-});
-
-// Add request interceptor to include token
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+  if (!response.ok) {
+    // Extract error message from JSON, if available
+    const errData = await response.json().catch(() => ({}));
+    throw new Error(errData.error || 'Login request failed.');
   }
-  return config;
-}, (error) => {
-  return Promise.reject(error);
-});
+  const { user, token } = await response.json();
+  return { user, token };
+}
 
-export const register = async (userData) => {
-  try {
-    const response = await api.post('/register', userData);
-    return response.data;
-  } catch (error) {
-    throw error.response?.data?.error || 'Registration failed';
-  }
-};
+export async function register({ first_name, last_name, email, password_hash, user_type }) {
+  const response = await fetch('/api/dev-register', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      firstName: first_name,
+      lastName: last_name,
+      email,
+      password: password_hash, // we named it “password” server-side
+      userType: user_type,
+    }),
+  });
 
-export const login = async (credentials) => {
-  try {
-    const response = await api.post('/login', credentials);
-    return response.data;
-  } catch (error) {
-    throw error.response?.data?.error || 'Login failed';
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
+    throw new Error(errData.error || 'Registration request failed.');
   }
-};
-
-// Add other API calls that need authentication
-export const getUserProfile = async (userId) => {
-  try {
-    const response = await api.get(`/${userId}`);
-    return response.data;
-  } catch (error) {
-    throw error.response?.data?.error || 'Failed to fetch user profile';
-  }
-};
+  const { user, token } = await response.json();
+  return { user, token };
+}

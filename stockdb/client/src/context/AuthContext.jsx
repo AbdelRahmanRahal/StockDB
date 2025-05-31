@@ -4,17 +4,18 @@ export const AuthContext = createContext();
 
 export default function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null); // Add token state
+  const [token, setToken] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [authLoading, setAuthLoading] = useState(true);
 
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
-    const storedToken = localStorage.getItem('token'); // Get token from storage
+    const storedToken = localStorage.getItem('token');
+    
     if (storedUser && storedToken) {
       setUser(JSON.parse(storedUser));
       setToken(storedToken);
-      setIsAuthenticated(true);
+      setIsAuthenticated(true); // Only set to true if we have both user and token
     }
     setAuthLoading(false);
   }, []);
@@ -29,7 +30,7 @@ export default function AuthProvider({ children }) {
 
   const logout = () => {
     localStorage.removeItem('user');
-    localStorage.removeItem('token'); // Remove token
+    localStorage.removeItem('token');
     setUser(null);
     setToken(null);
     setIsAuthenticated(false);
@@ -39,7 +40,7 @@ export default function AuthProvider({ children }) {
     <AuthContext.Provider 
       value={{ 
         user, 
-        token, // Provide token to context consumers
+        token,
         isAuthenticated, 
         authLoading, 
         login, 

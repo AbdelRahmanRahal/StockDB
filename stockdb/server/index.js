@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-const userRoutes = require('./routes/userRoutes');
+const bodyParser = require('body-parser');
+const devAuthRouter = require('./routes/devAuthRoutes');
+const devDataRouter = require('./routes/devDataRoutes');
 const productRoutes = require('./routes/productRoutes');
 const supplierRoutes = require('./routes/supplierRoutes');
 const orderRoutes = require('./routes/orderRoutes');
@@ -16,36 +18,13 @@ app.use(cors({
   credentials: true
 }));
 app.use(express.json());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // API Routes
-app.use('/api/users', userRoutes);
-app.use('/api/products', productRoutes);
-app.use('/api/suppliers', supplierRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/payments', paymentRoutes);
-app.use('/api/stocks', stockRoutes);
-
-// Test database connection
-app.get('/test-db', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT NOW()');
-    res.json({
-      message: 'Database connection successful',
-      timestamp: result.rows[0].now
-    });
-  } catch (error) {
-    res.status(500).json({
-      error: 'Database connection failed',
-      details: error.message
-    });
-  }
-});
-
-// Sample route
-app.get('/', (req, res) => {
-  res.send('StockDB server is running');
-});
+app.use('/api', devAuthRouter);
+app.use('/api', devDataRouter);
 
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`[SERVER] Listening on port https://localhost:${PORT}`);
 });

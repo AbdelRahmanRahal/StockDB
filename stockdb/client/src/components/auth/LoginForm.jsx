@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../context/AuthContext';
 import { useLoading } from '../../context/LoadingContext';
@@ -11,9 +11,16 @@ export default function LoginForm() {
     email: '',
     password: '',
   });
-  const { login: authLogin } = useContext(AuthContext);
+  const { user, isAuthenticated, authLoading, login: authLogin } = useContext(AuthContext); // Added user and isAuthenticated
   const { showLoading, hideLoading } = useLoading();
   const navigate = useNavigate();
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (isAuthenticated && !authLoading) {
+      navigate('/dashboard');
+    }
+  }, [isAuthenticated, authLoading, navigate]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
