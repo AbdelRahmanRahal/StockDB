@@ -1,3 +1,5 @@
+// stockDB/stockdb/client/src/pages/CustomerPage.jsx
+
 import React, { useState, useEffect, useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { getAllItems } from '../api/inventory';
@@ -48,11 +50,11 @@ export default function CustomerPage() {
     setCart((prev) => {
       const existingItem = prev.find((it) => it.sku === sku);
       if (existingItem) {
-      // Return new array with updated quantity
-        return prev.map((item) => 
-          item.sku === sku 
-          ? { ...item, quantity: item.quantity + 1 } 
-          : item
+        // Return new array with updated quantity
+        return prev.map((item) =>
+          item.sku === sku
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
         );
       } else {
         // Add new item with quantity 1
@@ -70,7 +72,7 @@ export default function CustomerPage() {
     });
   };
 
-  // Place order: pick a supplier (for simplicity, if all items share same supplier, use that; else ask user to select)
+  // Place order: call createOrder(...) which now returns { order, payment }
   const handlePlaceOrder = async () => {
     if (cart.length === 0) {
       toast.error('Cart is empty.');
@@ -81,9 +83,15 @@ export default function CustomerPage() {
       const result = await createOrder({
         items: cart,
       });
+      const { order, payment } = result;
       toast.success('Order placed!');
-      // Append new order to local orders list
-      setOrders((prev) => [...result.order ? [result.order] : [], ...prev]);
+
+      // Append the new order to local orders list
+      setOrders((prev) => [order, ...prev]);
+
+      // Optionally, you could display payment info somewhere.
+      console.log('Payment details:', payment);
+
       setCart([]);
     } catch (err) {
       console.error(err);
@@ -103,10 +111,10 @@ export default function CustomerPage() {
 
   return (
     <>
-      {/* Add Header component */}
+      {/* Header with only Profile button active */}
       <Header 
-        onOpenAddItem={() => {}} // Not used in customer view
-        onOpenAddSupplier={() => {}} // Not used in customer view
+        onOpenAddItem={() => {}}      // no-op for customer
+        onOpenAddSupplier={() => {}}  // no-op for customer
         onOpenProfile={() => setIsProfileOpen(true)}
       />
       
@@ -117,11 +125,11 @@ export default function CustomerPage() {
         user={user}
       />
       
-      <div className="container mx-auto p-6 pt-20"> {/* Added pt-20 to account for header height */}
+      <div className="container mx-auto p-6 pt-20">
         <h1 className="text-2xl font-bold mb-6">Customer Shopping Portal</h1>
 
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* Left Column - Available Items */}
+          {/* Left Column – Available Items */}
           <section className="lg:w-2/3">
             <h2 className="text-xl font-semibold mb-4">Available Items</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -141,28 +149,32 @@ export default function CustomerPage() {
             </div>
           </section>
 
-          {/* Right Column - Cart and Orders */}
+          {/* Right Column – Cart and Orders */}
           <div className="lg:w-1/3 space-y-6">
             {/* Shopping Cart */}
             <h2 className="text-xl font-semibold mb-4">Your Cart</h2>
             <section className="border rounded-lg p-4 bg-white shadow-sm">
               {cart.length === 0 ? (
-                  <p className="text-gray-500">Cart is empty.</p>
+                <p className="text-gray-500">Cart is empty.</p>
               ) : (
-                  <div className="space-y-3">
+                <div className="space-y-3">
                   {cart.map((it) => {
-                      const product = products.find((p) => p.sku === it.sku);
-                      return (
+                    const product = products.find((p) => p.sku === it.sku);
+                    return (
                       <div
                         key={it.sku}
                         className="flex justify-between items-center"
                       >
-                        <span className="truncate max-w-[180px]">{product?.product_name || it.sku}</span>
+                        <span className="truncate max-w-[180px]">
+                          {product?.product_name || it.sku}
+                        </span>
                         <input
                           type="number"
                           min="1"
                           value={it.quantity}
-                          onChange={(e) => updateQuantity(it.sku, parseInt(e.target.value, 10))}
+                          onChange={(e) =>
+                            updateQuantity(it.sku, parseInt(e.target.value, 10))
+                          }
                           className="w-16 border px-2 py-1 rounded"
                         />
                       </div>
@@ -186,17 +198,18 @@ export default function CustomerPage() {
               ) : (
                 <div className="space-y-3 max-h-[400px] overflow-y-auto">
                   {orders.map((o) => (
-                    <div
-                      key={o.id}
-                      className="border-b pb-3 last:border-b-0"
-                    >
+                    <div key={o.id} className="border-b pb-3 last:border-b-0">
                       <div className="flex justify-between text-sm">
                         <span>Order #{o.id}</span>
-                        <span className={`font-medium ${
-                          o.order_status === 'completed' ? 'text-green-600' : 
-                          o.order_status === 'pending' ? 'text-yellow-600' : 
-                          'text-gray-600'
-                        }`}>
+                        <span
+                          className={`font-medium ${
+                            o.order_status === 'completed'
+                              ? 'text-green-600'
+                              : o.order_status === 'pending'
+                              ? 'text-yellow-600'
+                              : 'text-gray-600'
+                          }`}
+                        >
                           {o.order_status}
                         </span>
                       </div>
@@ -207,11 +220,14 @@ export default function CustomerPage() {
                         Total: ${parseFloat(o.revenue).toFixed(2)}
                       </p>
                       <details className="mt-1 text-sm">
-                        <summary className="cursor-pointer text-blue-600">View items</summary>
+                        <summary className="cursor-pointer text-blue-600">
+                          View items
+                        </summary>
                         <ul className="list-disc ml-4 mt-1">
                           {o.items.map((it) => (
                             <li key={it.sku} className="text-xs">
-                              {it.product_name || it.sku} &times; {it.quantity} @ ${parseFloat(it.price).toFixed(2)}
+                              {it.product_name || it.sku} × {it.quantity} @ $
+                              {parseFloat(it.price).toFixed(2)}
                             </li>
                           ))}
                         </ul>

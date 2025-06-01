@@ -4,7 +4,6 @@
  *   • Requires Authorization: Bearer {token}
  *   • Returns [ { id, order_date, order_status, revenue, items: [ … ] }, … ]
  */
-
 export async function getOrders() {
   const token = localStorage.getItem('token');
   if (!token) {
@@ -28,14 +27,13 @@ export async function getOrders() {
 }
 
 /**
- * createOrder({ supplier_id, items })
- *   • Sends POST /api/dev-orders with JSON body { supplier_id, items }
+ * createOrder({ items })
+ *   • Sends POST /api/dev-orders with JSON body { items }
  *   • Requires Authorization: Bearer {token}
  *   • items = [ { sku: string, quantity: number }, … ]
- *   • Returns { order: { id, order_date, order_status, revenue, items } }
+ *   • Returns { order: { id, order_date, order_status, revenue, items }, payment: { … } }
  */
-
-export async function createOrder({ supplier_id, items }) {
+export async function createOrder({ items }) {
   const token = localStorage.getItem('token');
   if (!token) {
     throw new Error('No token found. Please log in.');
@@ -47,7 +45,7 @@ export async function createOrder({ supplier_id, items }) {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({ supplier_id, items }),
+    body: JSON.stringify({ items }),
   });
 
   if (!response.ok) {
@@ -56,5 +54,6 @@ export async function createOrder({ supplier_id, items }) {
   }
 
   const data = await response.json();
-  return data; // { order: { id, order_date, order_status, revenue, items } }
+  // data = { order: { … }, payment: { … } }
+  return data;
 }
