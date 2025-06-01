@@ -89,20 +89,20 @@ INSERT INTO customer (user_id, shipping_address, billing_address, phone_number, 
 (21, '999 Fayoum Rd., Fayoum', '999 Fayoum Rd., Fayoum', '01166677788', 65, 'Cash');
 
 -- Insert Orders
-INSERT INTO "order" (supplier_id, customer_id, order_date, delivery_estimated, received_date, order_status, revenue) VALUES
-(1, 1, '2025-05-01', '2025-05-03', '2025-05-03', 'Delivered', 240.00),
-(2, 5, '2025-05-02', '2025-05-05', NULL, 'Pending', 160.00),
-(3, 6, '2025-05-03', '2025-05-06', '2025-05-06', 'Delivered', 280.00),
-(1, 7, '2025-05-04', '2025-05-07', NULL, 'Pending', 190.00),
-(2, 9, '2025-05-05', '2025-05-08', '2025-05-08', 'Delivered', 320.00),
-(3, 10, '2025-05-06', '2025-05-09', NULL, 'Pending', 260.00),
-(1, 11, '2025-05-07', '2025-05-10', '2025-05-10', 'Delivered', 400.00),
-(2, 13, '2025-05-08', '2025-05-11', NULL, 'Pending', 340.00),
-(3, 15, '2025-05-09', '2025-05-12', '2025-05-12', 'Delivered', 440.00),
-(1, 16, '2025-05-10', '2025-05-13', NULL, 'Pending', 300.00),
-(2, 17, '2025-05-11', '2025-05-14', '2025-05-14', 'Delivered', 500.00),
-(3, 18, '2025-05-12', '2025-05-15', NULL, 'Pending', 360.00),
-(1, 20, '2025-05-13', '2025-05-16', '2025-05-16', 'Delivered', 550.00);
+INSERT INTO "order" (customer_id, order_date, delivery_estimated, received_date, order_status, revenue) VALUES
+(1, '2025-05-01', '2025-05-03', '2025-05-03', 'Delivered', 240.00),
+(5, '2025-05-02', '2025-05-05', NULL, 'Pending', 160.00),
+(6, '2025-05-03', '2025-05-06', '2025-05-06', 'Delivered', 280.00),
+(7, '2025-05-04', '2025-05-07', NULL, 'Pending', 190.00),
+(9, '2025-05-05', '2025-05-08', '2025-05-08', 'Delivered', 320.00),
+(10, '2025-05-06', '2025-05-09', NULL, 'Pending', 260.00),
+(11, '2025-05-07', '2025-05-10', '2025-05-10', 'Delivered', 400.00),
+(13, '2025-05-08', '2025-05-11', NULL, 'Pending', 340.00),
+(15, '2025-05-09', '2025-05-12', '2025-05-12', 'Delivered', 440.00),
+(16, '2025-05-10', '2025-05-13', NULL, 'Pending', 300.00),
+(17, '2025-05-11', '2025-05-14', '2025-05-14', 'Delivered', 500.00),
+(18, '2025-05-12', '2025-05-15', NULL, 'Pending', 360.00),
+(20, '2025-05-13', '2025-05-16', '2025-05-16', 'Delivered', 550.00);
 
 -- Insert Order Items
 INSERT INTO order_item (order_id, sku, quantity) VALUES
