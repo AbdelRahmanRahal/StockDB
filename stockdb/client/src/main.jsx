@@ -8,6 +8,7 @@ import LoginPage from './pages/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
 import CustomerPage from './pages/CustomerPage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
+import AboutUsPage from './pages/AboutUsPage.jsx';
 import { LoadingProvider } from './context/LoadingContext.jsx';
 import AuthProvider from './context/AuthContext.jsx';
 import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
@@ -53,6 +54,14 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                 element={
                   <ProtectedRoute>
                     <DashboardPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/about"
+                element={
+                  <ProtectedRoute>
+                    <AboutUsPage />
                   </ProtectedRoute>
                 }
               />
