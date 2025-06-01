@@ -62,7 +62,7 @@ export default function DashboardPage() {
         onOpenProfile={() => setIsProfileOpen(true)}
       />
 
-      <div className="container mx-auto p-20">
+      <div className="container mx-auto p-10">
         <h1 className="text-2xl font-bold mb-6">Staff Dashboard</h1>
         {/* Only Staff/Admin can see inventory */}
         {(user.userType === 'Staff' || user.userType === 'Admin') ? (

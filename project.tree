@@ -1,13 +1,10 @@
 StockDB/
-├─ db/
-│  ├─ stock_Db_datamainbulation.sql
-│  ├─ Stock_queries_insights.sql
-│  └─ Stock_schema.sql
 ├─ docs/
 │  ├─ diagrams/
 │  │  ├─ E_commerce_inventory_mangement_system-Page-1.drawio (3).png
 │  │  ├─ E_commerce_inventory_mangement_system-Page-2.drawio (1).png
 │  │  └─ E_commerce_inventory_mangement_system.drawio
+│  ├─ Application Documentation.pdf
 │  └─ Ecommerce_Inventory_Documentation.docx
 ├─ stockdb/
 │  ├─ client/
