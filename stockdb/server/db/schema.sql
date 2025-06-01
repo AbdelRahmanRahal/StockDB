@@ -90,7 +90,6 @@ CREATE TABLE IF NOT EXISTS customer (
 -- Create orders table
 CREATE TABLE IF NOT EXISTS "order" (
     id SERIAL PRIMARY KEY,
-    supplier_id INTEGER REFERENCES supplier(id),
     customer_id INTEGER REFERENCES customer(user_id),
     order_date TIMESTAMP WITH TIME ZONE NOT NULL,
     delivery_estimated TIMESTAMP WITH TIME ZONE,
