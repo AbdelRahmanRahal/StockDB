@@ -1,7 +1,7 @@
 /**
  * Dev‐only routes for customer orders:
  *  • GET  /api/dev-orders   → returns all orders for the logged‐in customer, each with items
- *  • POST /api/dev-orders   → creates a new order (with multiple items) + payment, all in one TXN
+ *  • POST /api/dev-orders   → creates a new order (with multiple items) + payment + updates inventory, all in one TXN
  */
 
 const express = require('express');
@@ -31,8 +31,7 @@ function verifyToken(req, res, next) {
  *  • Only customers can call this (we check userType below).
  *  • Returns array of orders for that customer. Each order includes:
  *      { id, order_date, delivery_estimated, received_date, order_status, revenue,
- *        items: [ { sku, product_name, quantity, price }, … ] 
- *      }
+ *        items: [ { sku, product_name, quantity, price }, … ] }
  */
 orderRouter.get('/dev-orders', verifyToken, async (req, res) => {
   const { id: userId, userType } = req.user;
@@ -108,8 +107,8 @@ orderRouter.get('/dev-orders', verifyToken, async (req, res) => {
 /**
  * POST /api/dev-orders
  *  • Body: { items: [ { sku: string, quantity: number }, … ] }
- *  • Creates one new row in "order", then one row per item in `order_item`, 
- *    and finally a `payment` row, all inside a TXN.
+ *  • Creates one new row in "order", then one row per item in `order_item`,
+ *    updates inventory, and finally a `payment` row—all inside a TXN.
  *  • Requires that a matching `customer` row already exists.
  *  • Uses `customer.preferred_payment_method` for the payment row.
  *  • Returns the newly created order + items + payment info.
@@ -138,7 +137,7 @@ orderRouter.post('/dev-orders', verifyToken, async (req, res) => {
 
     // ─── 1) Ensure a `customer` record exists for this user ──────────────────────
     const custCheckSql = `
-      SELECT shipping_address, billing_address, phone_number, loyalty_points, preferred_payment_method
+      SELECT preferred_payment_method
       FROM customer
       WHERE user_id = $1
       LIMIT 1;
@@ -152,7 +151,34 @@ orderRouter.post('/dev-orders', verifyToken, async (req, res) => {
     }
     const { preferred_payment_method } = custCheckRes.rows[0];
 
-    // ─── 2) Insert into "order" (initially without revenue) ────────────────────
+    // ─── 2) For each SKU, check inventory stock_level at once ─────────────────
+    const skus = items.map((it) => it.sku);
+    const invFetchSql = `
+      SELECT sku, stock_level
+      FROM inventory
+      WHERE sku = ANY($1);
+    `;
+    const invFetchRes = await pool.query(invFetchSql, [skus]);
+    const stockMap = {};
+    for (const row of invFetchRes.rows) {
+      stockMap[row.sku] = row.stock_level;
+    }
+    // If any requested SKU is missing from inventory table, or not enough stock, error out
+    for (const it of items) {
+      const available = stockMap[it.sku];
+      if (available === undefined) {
+        await pool.query('ROLLBACK');
+        return res.status(400).json({ error: `SKU '${it.sku}' does not exist in inventory.` });
+      }
+      if (available < it.quantity) {
+        await pool.query('ROLLBACK');
+        return res.status(400).json({
+          error: `Insufficient stock for SKU '${it.sku}'. Requested: ${it.quantity}, Available: ${available}.`,
+        });
+      }
+    }
+
+    // ─── 3) Insert into "order" (initially with revenue = 0) ────────────────────
     const insertOrderSql = `
       INSERT INTO "order"
         (customer_id, order_date, delivery_estimated, received_date, order_status, revenue)
@@ -163,8 +189,7 @@ orderRouter.post('/dev-orders', verifyToken, async (req, res) => {
     const insertOrderRes = await pool.query(insertOrderSql, [userId]);
     const newOrder = insertOrderRes.rows[0]; // { id, order_date, order_status }
 
-    // ─── 3) Fetch prices for all SKUs in one go ─────────────────────────────────
-    const skus = items.map((it) => it.sku);
+    // ─── 4) Fetch prices for all SKUs in one go ─────────────────────────────────
     const priceSql = `
       SELECT sku, price
       FROM product
@@ -175,14 +200,14 @@ orderRouter.post('/dev-orders', verifyToken, async (req, res) => {
     for (const row of priceRes.rows) {
       priceMap[row.sku] = parseFloat(row.price);
     }
-    // Validate that each SKU exists
+    // Validate each SKU from items actually has a price
     for (const it of items) {
       if (!(it.sku in priceMap)) {
         throw new Error(`Product with SKU '${it.sku}' not found.`);
       }
     }
 
-    // ─── 4) Insert each item into order_item & cumulate revenue ─────────────────
+    // ─── 5) Insert each item into order_item, update inventory, and cumulate revenue ─
     let totalRevenue = 0;
     const insertItemSql = `
       INSERT INTO order_item
@@ -190,23 +215,35 @@ orderRouter.post('/dev-orders', verifyToken, async (req, res) => {
       VALUES
         ($1, $2, $3, CURRENT_TIMESTAMP);
     `;
+    const decrementSql = `
+      UPDATE inventory
+      SET stock_level = stock_level - $1,
+          updated_at  = CURRENT_TIMESTAMP
+      WHERE sku = $2;
+    `;
+
     for (const it of items) {
       const price = priceMap[it.sku];
       totalRevenue += price * it.quantity;
+
+      // 5a) Insert into order_item
       await pool.query(insertItemSql, [newOrder.id, it.sku, it.quantity]);
+
+      // 5b) Decrement inventory stock_level
+      await pool.query(decrementSql, [it.quantity, it.sku]);
     }
 
-    // ─── 5) Update "order" row with computed revenue ───────────────────────────
+    // ─── 6) Update "order" row with computed revenue ───────────────────────────
     const updateOrderSql = `
       UPDATE "order"
-      SET revenue = $1,
+      SET revenue    = $1,
           updated_at = CURRENT_TIMESTAMP
       WHERE id = $2;
     `;
     await pool.query(updateOrderSql, [totalRevenue, newOrder.id]);
     newOrder.revenue = totalRevenue;
 
-    // ─── 6) Create payment row using customer.preferred_payment_method ────────
+    // ─── 7) Create payment row using customer.preferred_payment_method ─────────
     const insertPaymentSql = `
       INSERT INTO payment
         (order_id, amount, payment_date, payment_method, transaction_status, customer_id, created_at)
@@ -224,26 +261,27 @@ orderRouter.post('/dev-orders', verifyToken, async (req, res) => {
 
     await pool.query('COMMIT');
 
-    // ─── 7) Build the response: include newOrder + detailed items + newPayment ─
-    const detailedItems = [];
-    const fetchProductNamesSql = `
+    // ─── 8) Build detailed items (including fetched product_name) ───────────────
+    // We already have skus and quantities; fetch product_name now:
+    const fetchNamesSql = `
       SELECT sku, product_name
       FROM product
       WHERE sku = ANY($1);
     `;
-    const fetchProductNamesRes = await pool.query(fetchProductNamesSql, [skus]);
-    for (const row of fetchProductNamesRes.rows) {
-      const found = items.find((it) => it.sku === row.sku);
-      if (found) {
-        detailedItems.push({
-          sku: found.sku,
-          quantity: found.quantity,
-          product_name: row.product_name,
-          price: priceMap[found.sku],
-        });
-      }
+    const fetchNamesRes = await pool.query(fetchNamesSql, [skus]);
+    const nameMap = {};
+    for (const row of fetchNamesRes.rows) {
+      nameMap[row.sku] = row.product_name;
     }
 
+    const detailedItems = items.map((it) => ({
+      sku: it.sku,
+      quantity: it.quantity,
+      product_name: nameMap[it.sku] || it.sku,
+      price: priceMap[it.sku],
+    }));
+
+    // ─── 9) Respond with order + payment details ───────────────────────────────
     return res.status(201).json({
       order: {
         id: newOrder.id,
