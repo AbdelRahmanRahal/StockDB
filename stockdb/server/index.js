@@ -3,8 +3,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const devAuthRouter = require('./routes/devAuthRoutes');
 const devDataRouter = require('./routes/devDataRoutes');
-const productRoutes = require('./routes/productRoutes');
-const supplierRoutes = require('./routes/supplierRoutes');
+const devProfileRouter = require('./routes/devProfileRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const stockRoutes = require('./routes/stockRoutes');
@@ -24,6 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // API Routes
 app.use('/api', devAuthRouter);
 app.use('/api', devDataRouter);
+app.use('/api', devProfileRouter);
 
 app.listen(PORT, () => {
   console.log(`[SERVER] Listening on port https://localhost:${PORT}`);

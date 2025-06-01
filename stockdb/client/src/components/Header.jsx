@@ -2,7 +2,7 @@ import { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
-export default function Header({ onOpenAddItem, onOpenAddSupplier }) {
+export default function Header({ onOpenAddItem, onOpenAddSupplier, onOpenProfile }) {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
   const userType = user?.userType;
@@ -21,6 +21,16 @@ export default function Header({ onOpenAddItem, onOpenAddSupplier }) {
             </div>
           </Link>
         </div>
+
+        {/* Profile Button (always visible if logged in) */}
+        {user && (
+          <button
+            onClick={onOpenProfile}
+            className="h-full px-4 flex items-center justify-center hover:bg-gray-800 transition-colors duration-200 border-l border-gray-700"
+          >
+            Profile
+          </button>
+        )}
 
         {/* Nav buttons */}
         <nav className="flex flex-1 h-full">

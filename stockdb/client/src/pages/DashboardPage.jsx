@@ -3,6 +3,7 @@ import Header from '../components/Header';
 import AddItemModal from '../components/modals/AddItemModal';
 import AddSupplierModal from '../components/modals/AddSupplierModal';
 import ItemList from '../components/dashboard/ItemList';
+import ProfileModal from '../components/modals/ProfileModal';
 import { getAllItems, createItem } from '../api/inventory';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-toastify';
@@ -16,6 +17,7 @@ export default function DashboardPage() {
   // Modals state
   const [isAddItemOpen, setIsAddItemOpen] = useState(false);
   const [isAddSupplierOpen, setIsAddSupplierOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -55,9 +57,10 @@ export default function DashboardPage() {
       <Header
         onOpenAddItem={() => setIsAddItemOpen(true)}
         onOpenAddSupplier={() => setIsAddSupplierOpen(true)}
+        onOpenProfile={() => setIsProfileOpen(true)}
       />
 
-      <div className="container mx-auto p-6">
+      <div className="container mx-auto p-20">
         <h1 className="text-2xl font-bold mb-6">Staff Dashboard</h1>
         {/* Only Staff/Admin can see inventory */}
         {(user.userType === 'Staff' || user.userType === 'Admin') ? (
@@ -78,6 +81,10 @@ export default function DashboardPage() {
       <AddSupplierModal
         isOpen={isAddSupplierOpen}
         onClose={() => setIsAddSupplierOpen(false)}
+      />
+      <ProfileModal
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
       />
     </>
   );

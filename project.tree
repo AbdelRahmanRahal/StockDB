@@ -18,6 +18,7 @@ StockDB/
 │  │  │  ├─ api/
 │  │  │  │  ├─ auth.js
 │  │  │  │  ├─ inventory.js
+│  │  │  │  ├─ profile.js
 │  │  │  │  └─ supplier.js
 │  │  │  ├─ assets/
 │  │  │  │  └─ react.svg
@@ -31,10 +32,12 @@ StockDB/
 │  │  │  │  │  └─ ItemList.jsx
 │  │  │  │  ├─ forms/
 │  │  │  │  │  ├─ AddItemForm.jsx
-│  │  │  │  │  └─ AddSupplierForm.jsx
+│  │  │  │  │  ├─ AddSupplierForm.jsx
+│  │  │  │  │  └─ ProfileForm.jsx
 │  │  │  │  ├─ modals/
 │  │  │  │  │  ├─ AddItemModal.jsx
-│  │  │  │  │  └─ AddSupplierModal.jsx
+│  │  │  │  │  ├─ AddSupplierModal.jsx
+│  │  │  │  │  └─ ProfileModal.jsx
 │  │  │  │  ├─ GlobalLoadingOverlay.jsx
 │  │  │  │  └─ Header.jsx
 │  │  │  ├─ context/
@@ -88,6 +91,7 @@ StockDB/
 │     │  ├─ alertRoutes.js
 │     │  ├─ devAuthRoutes.js
 │     │  ├─ devDataRoutes.js
+│     │  ├─ devProfileRoutes.js
 │     │  ├─ orderRoutes.js
 │     │  ├─ paymentRoutes.js
 │     │  ├─ reportRoutes.js
