@@ -7,7 +7,7 @@ import ProfileModal from '../components/modals/ProfileModal';
 import { getAllItems, createItem } from '../api/inventory';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-toastify';
-import { Navigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 export default function DashboardPage() {
   const { user, isAuthenticated, authLoading } = useContext(AuthContext);
@@ -34,6 +34,7 @@ export default function DashboardPage() {
     fetchItems();
   }, []);
 
+  const navigate = useNavigate()
   const handleAdd = async (itemData) => {
     const newItem = await createItem(itemData);
     setItems((prev) => [...prev, { ...newItem, stock_level: itemData.stock_level }]);
@@ -67,8 +68,7 @@ export default function DashboardPage() {
           <>
             <ItemList items={items} />
           </>
-        ) : (
-          <p>You do not have permission to view this page.</p>
+        ) : (navigate('/customer')
         )}
       </div>
 

@@ -6,12 +6,12 @@ import { ToastContainer } from 'react-toastify';
 import App from './App.jsx';
 import LoginPage from './pages/LoginPage.jsx';
 import RegisterPage from './pages/RegisterPage.jsx';
+import CustomerPage from './pages/CustomerPage.jsx';
 import DashboardPage from './pages/DashboardPage.jsx';
 import { LoadingProvider } from './context/LoadingContext.jsx';
 import AuthProvider from './context/AuthContext.jsx';
 import ProtectedRoute from './components/auth/ProtectedRoute.jsx';
 import GlobalLoadingOverlay from './components/GlobalLoadingOverlay.jsx';
-
 import './index.css';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -40,6 +40,14 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <Route path="/" element={<App />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route
+                path="/customer"
+                element={
+                  <ProtectedRoute>
+                    <CustomerPage />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/dashboard"
                 element={

@@ -3,8 +3,8 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const devAuthRouter = require('./routes/devAuthRoutes');
 const devDataRouter = require('./routes/devDataRoutes');
+const devOrderRouter = require('./routes/devOrderRoutes');
 const devProfileRouter = require('./routes/devProfileRoutes');
-const orderRoutes = require('./routes/orderRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const stockRoutes = require('./routes/stockRoutes');
 const pool = require('./config/db');
@@ -23,6 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // API Routes
 app.use('/api', devAuthRouter);
 app.use('/api', devDataRouter);
+app.use('/api', devOrderRouter);
 app.use('/api', devProfileRouter);
 
 app.listen(PORT, () => {
