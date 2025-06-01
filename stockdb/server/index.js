@@ -5,6 +5,7 @@ const devAuthRouter = require('./routes/devAuthRoutes');
 const devDataRouter = require('./routes/devDataRoutes');
 const devOrderRouter = require('./routes/devOrderRoutes');
 const devProfileRouter = require('./routes/devProfileRoutes');
+const devReportRouter  = require('./routes/devReportRoutes');
 const paymentRoutes = require('./routes/paymentRoutes');
 const stockRoutes = require('./routes/stockRoutes');
 const pool = require('./config/db');
@@ -25,6 +26,7 @@ app.use('/api', devAuthRouter);
 app.use('/api', devDataRouter);
 app.use('/api', devOrderRouter);
 app.use('/api', devProfileRouter);
+app.use('/api', devReportRouter);
 
 app.listen(PORT, () => {
   console.log(`[SERVER] Listening on port https://localhost:${PORT}`);

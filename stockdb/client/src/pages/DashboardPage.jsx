@@ -4,6 +4,7 @@ import AddItemModal from '../components/modals/AddItemModal';
 import AddSupplierModal from '../components/modals/AddSupplierModal';
 import ItemList from '../components/dashboard/ItemList';
 import ProfileModal from '../components/modals/ProfileModal';
+import ReportSection from '../components/dashboard/ReportSection';
 import { getAllItems, createItem } from '../api/inventory';
 import { AuthContext } from '../context/AuthContext';
 import { toast } from 'react-toastify';
@@ -66,7 +67,17 @@ export default function DashboardPage() {
         {/* Only Staff/Admin can see inventory */}
         {(user.userType === 'Staff' || user.userType === 'Admin') ? (
           <>
-            <ItemList items={items} />
+            <div className="flex flex-col lg:flex-row gap-8">
+              {/* Inventory Items - left side */}
+              <div className="flex-1">
+                <ItemList items={items} />
+              </div>
+
+              {/* Reports - right side */}
+              <div className="w-full lg:w-1/3">
+                <ReportSection />
+              </div>
+            </div>
           </>
         ) : (navigate('/customer')
         )}

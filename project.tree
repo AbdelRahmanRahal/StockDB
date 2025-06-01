@@ -18,7 +18,9 @@ StockDB/
 │  │  │  ├─ api/
 │  │  │  │  ├─ auth.js
 │  │  │  │  ├─ inventory.js
+│  │  │  │  ├─ order.js
 │  │  │  │  ├─ profile.js
+│  │  │  │  ├─ report.js
 │  │  │  │  └─ supplier.js
 │  │  │  ├─ assets/
 │  │  │  │  └─ react.svg
@@ -29,7 +31,8 @@ StockDB/
 │  │  │  │  │  ├─ ProtectedRoute.jsx
 │  │  │  │  │  └─ RegisterForm.jsx
 │  │  │  │  ├─ dashboard/
-│  │  │  │  │  └─ ItemList.jsx
+│  │  │  │  │  ├─ ItemList.jsx
+│  │  │  │  │  └─ ReportSection.jsx
 │  │  │  │  ├─ forms/
 │  │  │  │  │  ├─ AddItemForm.jsx
 │  │  │  │  │  ├─ AddSupplierForm.jsx
@@ -44,6 +47,8 @@ StockDB/
 │  │  │  │  ├─ AuthContext.jsx
 │  │  │  │  └─ LoadingContext.jsx
 │  │  │  ├─ pages/
+│  │  │  │  ├─ AboutUsPage.jsx
+│  │  │  │  ├─ CustomerPage.jsx
 │  │  │  │  ├─ DashboardPage.jsx
 │  │  │  │  ├─ LoginPage.jsx
 │  │  │  │  └─ RegisterPage.jsx
@@ -91,8 +96,9 @@ StockDB/
 │     │  ├─ alertRoutes.js
 │     │  ├─ devAuthRoutes.js
 │     │  ├─ devDataRoutes.js
+│     │  ├─ devOrderRoutes.js
 │     │  ├─ devProfileRoutes.js
-│     │  ├─ orderRoutes.js
+│     │  ├─ devReportRoutes.js
 │     │  ├─ paymentRoutes.js
 │     │  ├─ reportRoutes.js
 │     │  └─ stockRoutes.js
