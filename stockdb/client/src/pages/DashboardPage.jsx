@@ -74,7 +74,7 @@ export default function DashboardPage() {
               </div>
 
               {/* Reports - right side */}
-              <div className="w-full lg:w-1/3">
+              <div className="w-full lg:w-3/7">
                 <ReportSection />
               </div>
             </div>
