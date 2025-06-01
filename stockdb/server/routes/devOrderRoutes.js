@@ -10,7 +10,7 @@ const pool = require('../config/db');
 
 const orderRouter = express.Router();
 
-// ─── Middleware to verify JWT “Bearer {token}” ───────────────────────────────
+// ─── Middleware to verify JWT "Bearer {token}" ───────────────────────────────
 function verifyToken(req, res, next) {
   const authHeader = req.headers['authorization'] || '';
   const [scheme, token] = authHeader.split(' ');
@@ -108,7 +108,7 @@ orderRouter.get('/dev-orders', verifyToken, async (req, res) => {
 
 /**
  * POST /api/dev-orders
- *  • Body: { supplier_id: number, items: [ { sku: string, quantity: number }, … ] }
+ *  • Body: { items: [ { sku: string, quantity: number }, … ] }
  *  • Creates one new row in "order", then one row per item in `order_item`, all inside a TXN.
  *  • Automatically computes `order_date = now()`, `order_status = 'Pending'`, 
  *    and `revenue = SUM(price * quantity)` by querying `product.price`.
@@ -120,10 +120,10 @@ orderRouter.post('/dev-orders', verifyToken, async (req, res) => {
     return res.status(403).json({ error: 'Only customers can place orders.' });
   }
 
-  const { supplier_id, items } = req.body;
+  const { items } = req.body;
   // Basic validation
-  if (!supplier_id || !Array.isArray(items) || items.length === 0) {
-    return res.status(400).json({ error: 'supplier_id and non-empty items[] are required.' });
+  if (!Array.isArray(items) || items.length === 0) {
+    return res.status(400).json({ error: 'Non-empty items[] is required.' });
   }
   for (const it of items) {
     if (!it.sku || typeof it.quantity !== 'number' || it.quantity < 1) {
@@ -136,59 +136,56 @@ orderRouter.post('/dev-orders', verifyToken, async (req, res) => {
   try {
     await pool.query('BEGIN');
 
-    // 1) Compute total revenue by summing price * quantity
+    // 1) Create the order
+    const orderSql = `
+      INSERT INTO "order" 
+        (customer_id, order_date, order_status)
+      VALUES 
+        ($1, CURRENT_TIMESTAMP, 'Pending')
+      RETURNING id, order_date, order_status;
+    `;
+    const orderRes = await pool.query(orderSql, [userId]);
+    const newOrder = orderRes.rows[0];
+
+    // 2) Get prices for all SKUs in one query
     const skus = items.map((it) => it.sku);
-    // Fetch all prices for these SKUs
-    const pricesSql = `
-      SELECT sku, price
-      FROM product
+    const priceSql = `
+      SELECT sku, price 
+      FROM product 
       WHERE sku = ANY($1);
     `;
-    const pricesRes = await pool.query(pricesSql, [skus]);
+    const priceRes = await pool.query(priceSql, [skus]);
     const priceMap = {};
-    for (const row of pricesRes.rows) {
+    for (const row of priceRes.rows) {
       priceMap[row.sku] = parseFloat(row.price);
     }
-    // Ensure every SKU has a price
-    for (const it of items) {
-      if (!(it.sku in priceMap)) {
-        await pool.query('ROLLBACK');
-        return res
-          .status(400)
-          .json({ error: `Product with SKU '${it.sku}' not found.` });
-      }
-    }
-    // Sum up
+
+    // 3) Insert order items and compute total revenue
     let totalRevenue = 0;
     for (const it of items) {
-      totalRevenue += priceMap[it.sku] * it.quantity;
+      const price = priceMap[it.sku];
+      if (!price) {
+        throw new Error(`No price found for SKU ${it.sku}`);
+      }
+      totalRevenue += price * it.quantity;
+
+      const itemSql = `
+        INSERT INTO order_item 
+          (order_id, sku, quantity)
+        VALUES 
+          ($1, $2, $3);
+      `;
+      await pool.query(itemSql, [newOrder.id, it.sku, it.quantity]);
     }
 
-    // 2) Insert into "order"
-    const insertOrderSql = `
-      INSERT INTO "order"
-        (supplier_id, customer_id, order_date, delivery_estimated, received_date, order_status, revenue)
-      VALUES
-        ($1, $2, CURRENT_TIMESTAMP, NULL, NULL, 'Pending', $3)
-      RETURNING id, order_date, order_status, revenue;
+    // Update order with computed revenue
+    const updateSql = `
+      UPDATE "order" 
+      SET revenue = $1 
+      WHERE id = $2;
     `;
-    const insertOrderRes = await pool.query(insertOrderSql, [
-      supplier_id,
-      userId,
-      totalRevenue,
-    ]);
-    const newOrder = insertOrderRes.rows[0]; // { id, order_date, order_status, revenue }
-
-    // 3) Insert each item into order_item
-    const insertItemSql = `
-      INSERT INTO order_item
-        (order_id, sku, quantity)
-      VALUES
-        ($1, $2, $3);
-    `;
-    for (const it of items) {
-      await pool.query(insertItemSql, [newOrder.id, it.sku, it.quantity]);
-    }
+    await pool.query(updateSql, [totalRevenue, newOrder.id]);
+    newOrder.revenue = totalRevenue;
 
     await pool.query('COMMIT');
 

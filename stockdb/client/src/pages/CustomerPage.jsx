@@ -77,29 +77,8 @@ export default function CustomerPage() {
       return;
     }
 
-    // Derive supplier_id: 
-    // Here we assume customer must pick one supplier for entire order.
-    // For example, if all products in cart share the same supplier, auto‐set; else prompt.
-    const allSkus = cart.map((it) => it.sku);
-    // Build map from SKU → supplier_id (by looking at products array)
-    const skuToSupplier = {};
-    for (const p of products) {
-      skuToSupplier[p.sku] = p.supplier_id;
-    }
-    const supplierIds = [...new Set(allSkus.map((s) => skuToSupplier[s]))];
-    let chosenSupplierId = null;
-
-    if (supplierIds.length === 1) {
-      chosenSupplierId = supplierIds[0];
-    } else {
-      // If multiple suppliers, just pick the first (or prompt user in a real UI)
-      chosenSupplierId = supplierIds[0];
-      toast.info('Mixed suppliers in cart; defaulting to first supplier.');
-    }
-
     try {
       const result = await createOrder({
-        supplier_id: chosenSupplierId,
         items: cart,
       });
       toast.success('Order placed!');
