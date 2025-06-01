@@ -37,12 +37,6 @@ export default function Header({ onOpenAddItem, onOpenAddSupplier, onOpenProfile
           {userType === 'Customer' ? (
             <>
               <Link
-                to="/buy"
-                className="flex-1 flex items-center justify-center hover:bg-gray-800 transition-colors duration-200 border-x border-gray-700"
-              >
-                Buy
-              </Link>
-              <Link
                 to="/about"
                 className="flex-1 flex items-center justify-center hover:bg-gray-800 transition-colors duration-200 border-r border-gray-700"
               >
